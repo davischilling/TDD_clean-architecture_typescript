@@ -3,5 +3,4 @@ import { resolve } from 'path'
 
 addAlias('@', resolve('dist'))
 
-/* Importar este arquivo no arquivo
-// inicial da aplicação (@/main/api/index.ts) */
+/* Importar este arquivo em (@/main/api/index.ts) */

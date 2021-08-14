@@ -14,8 +14,7 @@
 
 > ## Fluxo Alternativo: Usuário já existe
 
-1. .
-2. .
+...
 3. Atualizar a conta do usuário com os dados recebidos do Facebook (Facebook ID e nome - só atualizar o nome caso a conta do usuário não possua nome)
 
 > ## Fluxo de exceção: Token invalido ou expirado
