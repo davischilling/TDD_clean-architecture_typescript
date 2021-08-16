@@ -1,15 +1,8 @@
-import { HttpGetClient } from '@/data/contracts/http'
+import { AxiosHttpClient } from '@/infra/http'
 
 import axios from 'axios'
 
 jest.mock('axios')
-
-class AxiosHttpClient {
-  async get <T = any> (args: HttpGetClient.Params): Promise<T> {
-    const { data } = await axios.get(args.url, { params: args.params })
-    return data
-  }
-}
 
 describe('AxiosHttpClient', () => {
   let url: string
@@ -45,7 +38,7 @@ describe('AxiosHttpClient', () => {
       expect(axiosResult).toEqual('any_data')
     })
 
-    it('should rethrow if get throws', async () => {
+    it('should rethrow if axios.get throws', async () => {
       fakeAxios.get.mockRejectedValueOnce(new Error('http_error'))
 
       const promise = sut.get({ url, params })
