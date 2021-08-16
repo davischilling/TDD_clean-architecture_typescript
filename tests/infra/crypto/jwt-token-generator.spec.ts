@@ -8,9 +8,9 @@ class JwtTokenGenerator {
     private readonly secret: string
   ) {}
 
-  async generateToken (params: TokenGenerator.Params): Promise<void> {
+  async generateToken (params: TokenGenerator.Params): Promise<TokenGenerator.Result> {
     const expirationInSeconds = params.expirationInMs / 1000
-    jwt.sign({ key: params.key }, this.secret, { expiresIn: expirationInSeconds })
+    return jwt.sign({ key: params.key }, this.secret, { expiresIn: expirationInSeconds })
   }
 }
 
@@ -21,6 +21,10 @@ describe('JwtTokenGenerator', () => {
 
   beforeAll(() => {
     fakeJwt = jwt as jest.Mocked<typeof jwt>
+    // mockImplementation não só retorna o valor,
+    // mas modifica a implementação do método
+    // para que o valor possa ser retornado
+    fakeJwt.sign.mockImplementation(() => 'any_token')
   })
 
   beforeEach(() => {
@@ -37,5 +41,11 @@ describe('JwtTokenGenerator', () => {
       { expiresIn: 1 }
     )
     expect(fakeJwt.sign).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return a token', async () => {
+    const token = await sut.generateToken({ key: 'any_key', expirationInMs: 1000 })
+
+    expect(token).toBe('any_token')
   })
 })
