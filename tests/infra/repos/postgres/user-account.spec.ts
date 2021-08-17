@@ -1,74 +1,42 @@
-import { LoadUserAccountRepository, SaveFacebookAccoutRepository } from '@/data/contracts/repos'
+import { PgUserAccountRepository } from '@/infra/postgres/repos'
+import { PgUser } from '@/infra/postgres/entities'
 
-import { newDb, IMemoryDb, IBackup } from 'pg-mem'
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  getRepository,
-  Connection,
-  Repository
-} from 'typeorm'
+import { IBackup, IMemoryDb, newDb } from 'pg-mem'
+import { Connection, EntityTarget, getRepository, Repository } from 'typeorm'
 
-class PgUserAccountRepository implements LoadUserAccountRepository {
-  async load (params: LoadUserAccountRepository.Params): Promise<LoadUserAccountRepository.Result> {
-    const pgUserRepo = getRepository(PgUser)
-    const pgUser = await pgUserRepo.findOne({ email: params.email })
-    if (pgUser != null) {
-      return {
-        id: pgUser.id.toString(),
-        name: pgUser.name ?? undefined
-      }
-    } else {
-      return undefined
-    }
-  }
-
-  async saveWithFacebook (params: SaveFacebookAccoutRepository.Params): Promise<void> {
-
-  }
+type FakeDb = {
+  connection: Connection
+  backup: IBackup
 }
 
-@Entity({ name: 'usuarios' })
-export class PgUser {
-  @PrimaryGeneratedColumn()
-  id!: number
-
-  @Column({ name: 'nome', nullable: true })
-  name?: string
-
-  @Column()
-  email!: string
-
-  @Column({ name: 'id_facebook', nullable: true })
-  facebookId?: string
+const makeFakeDb = async (entities: Array<EntityTarget<any>>): Promise<FakeDb> => {
+  const db: IMemoryDb = newDb()
+  const connection: Connection = await db.adapters.createTypeormConnection({
+    type: 'postgres',
+    entities
+  })
+  await connection.synchronize()
+  const backup: IBackup = db.backup()
+  return { connection, backup }
 }
 
 describe('PgUserAccountRepository', () => {
   let sut: PgUserAccountRepository
-  let db: IMemoryDb
-  let connection: Connection
+  let pg: FakeDb
   let pgUserRepo: Repository<PgUser>
-  let backup: IBackup
 
   beforeAll(async () => {
-    db = newDb()
-    connection = await db.adapters.createTypeormConnection({
-      type: 'postgres',
-      entities: [PgUser]
-    })
-    await connection.synchronize()
-    backup = db.backup()
+    pg = await makeFakeDb([PgUser])
     pgUserRepo = getRepository(PgUser)
   })
 
   beforeEach(async () => {
-    backup.restore()
+    pg.backup.restore()
     sut = new PgUserAccountRepository()
   })
 
   afterAll(async () => {
-    await connection.close()
+    await pg.connection.close()
   })
 
   describe('load', () => {
