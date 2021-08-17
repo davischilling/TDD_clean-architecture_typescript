@@ -1,6 +1,6 @@
 import { LoadUserAccountRepository, SaveFacebookAccoutRepository } from '@/data/contracts/repos'
 
-import { newDb, IMemoryDb } from 'pg-mem'
+import { newDb, IMemoryDb, IBackup } from 'pg-mem'
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -49,6 +49,7 @@ describe('PgUserAccountRepository', () => {
   let db: IMemoryDb
   let connection: Connection
   let pgUserRepo: Repository<PgUser>
+  let backup: IBackup
 
   beforeAll(async () => {
     db = newDb()
@@ -57,16 +58,13 @@ describe('PgUserAccountRepository', () => {
       entities: [PgUser]
     })
     await connection.synchronize()
+    backup = db.backup()
     pgUserRepo = getRepository(PgUser)
   })
 
   beforeEach(async () => {
-    await pgUserRepo.save({ email: 'existing_email' })
+    backup.restore()
     sut = new PgUserAccountRepository()
-  })
-
-  afterEach(async () => {
-    await pgUserRepo.clear()
   })
 
   afterAll(async () => {
@@ -75,6 +73,8 @@ describe('PgUserAccountRepository', () => {
 
   describe('load', () => {
     it('should return an account if email exists', async () => {
+      await pgUserRepo.save({ email: 'existing_email' })
+
       const account = await sut.load({ email: 'existing_email' })
 
       expect(account).toEqual({ id: '1' })
