@@ -1,7 +1,8 @@
-import { badRequest, HttpResponse, ok, serverError, unauthorized } from '@/application/helpers'
-import { AuthenticationError } from '@/domain/errors'
+import { Controller } from '@/application/controllers'
+import { HttpResponse, ok, unauthorized } from '@/application/helpers'
+import { ValidationBuilder as validate, Validator } from '@/application/validation'
 import { FacebookAuthentication } from '@/domain/features'
-import { ValidationBuilder, ValidationComposite } from '../validation'
+import { AccessToken } from '@/domain/models'
 
 type HttpRequest = {
   token: string
@@ -11,34 +12,26 @@ type Model = Error | {
   accessToken: string
 }
 
-export class FacebookLoginController {
+export class FacebookLoginController extends Controller {
   constructor (
     private readonly facebookAuthentication: FacebookAuthentication
-  ) {}
-
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-    try {
-      const error = this.validate(httpRequest)
-      if (error !== undefined) {
-        return badRequest(error)
-      }
-      const accessToken = await this.facebookAuthentication.perform({ token: httpRequest.token })
-      if (accessToken instanceof AuthenticationError) {
-        return unauthorized()
-      } else {
-        return ok({ accessToken: accessToken.value })
-      }
-    } catch (error: any) {
-      return serverError(error)
-    }
+  ) {
+    super()
   }
 
-  private validate (httpRequest: HttpRequest): Error | undefined {
-    return new ValidationComposite([
-      ...ValidationBuilder
+  async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
+    const accessToken = await this.facebookAuthentication.perform({ token: httpRequest.token })
+    return accessToken instanceof AccessToken
+      ? ok({ accessToken: accessToken.value })
+      : unauthorized()
+  }
+
+  override buildValidators (httpRequest: HttpRequest): Validator[] {
+    return [
+      ...validate
         .of({ value: httpRequest.token, fieldName: 'token' })
         .required()
         .build()
-    ]).validate()
+    ]
   }
 }
