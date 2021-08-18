@@ -1,7 +1,7 @@
-import { RequiredFieldError } from '@/application/errors'
 import { badRequest, HttpResponse, ok, serverError, unauthorized } from '@/application/helpers'
 import { AuthenticationError } from '@/domain/errors'
 import { FacebookAuthentication } from '@/domain/features'
+import { RequiredStringValidator } from '../validation'
 
 type HttpRequest = {
   token: string
@@ -34,10 +34,7 @@ export class FacebookLoginController {
   }
 
   private validate (httpRequest: HttpRequest): Error | undefined {
-    if (httpRequest.token === '' || httpRequest.token === null || httpRequest.token === undefined) {
-      return new RequiredFieldError('token')
-    } else {
-      return undefined
-    }
+    const validator = new RequiredStringValidator(httpRequest.token, 'token')
+    return validator.validate()
   }
 }
