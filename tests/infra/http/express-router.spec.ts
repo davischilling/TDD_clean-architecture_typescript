@@ -20,8 +20,8 @@ describe('ExpressRouter', () => {
   let controller: MockProxy<Controller>
 
   beforeAll(() => {
-    (req = getMockReq({ body: { any: 'any' } }));
-    ({ res } = getMockRes())
+    req = getMockReq({ body: { any: 'any' } })
+    res = getMockRes().res
     controller = mock()
   })
 
@@ -36,7 +36,7 @@ describe('ExpressRouter', () => {
   })
 
   it('should call handle with empty request', async () => {
-    (req = getMockReq({ body: undefined }))
+    req = getMockReq()
 
     await sut.adapt(req, res)
 
