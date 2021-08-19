@@ -6,13 +6,15 @@
   "scripts": {
     "start": "node dist/main/api",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
+    "prepare": "husky install",
+    "check": "npm-check -s -u",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "npm run test -- --watch",
     "test:staged": "npm run test -- --findRelatedTests",
     "test:coverage": "npm run test -- --coverage",
-    "prepare": "husky install"
+    "test:fb-api": "npm run test -- -c ./jest.integration.config.js ./tests/external/facebook-api.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +38,7 @@
     "jest": "^27.0.6",
     "jest-mock-extended": "^2.0.2-beta2",
     "lint-staged": "^11.1.2",
+    "npm-check": "^4.1.4",
     "pg-mem": "^1.9.15",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
