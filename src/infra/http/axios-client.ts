@@ -1,4 +1,4 @@
-import { HttpGetClient } from '@/data/contracts/http'
+import { HttpGetClient } from '@/domain/contracts/http'
 import axios from 'axios'
 
 type Params = HttpGetClient.Params
