@@ -1,4 +1,5 @@
 import { TokenGenerator } from '@/domain/contracts/crypto'
+
 import { sign } from 'jsonwebtoken'
 
 type Params = TokenGenerator.Params

@@ -1,13 +1,4 @@
-type FacebookData = {
-  name: string
-  email: string
-  facebookId: string
-}
-
-type AccountData = {
-  id?: string
-  name?: string
-}
+import { AccountData, FacebookData } from '@/domain/models'
 
 export class FacebookAccount {
   id?: string

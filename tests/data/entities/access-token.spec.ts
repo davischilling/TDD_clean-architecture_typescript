@@ -1,4 +1,4 @@
-import { AccessToken } from '@/domain/entities'
+import { AccessToken } from '@/data/entities'
 
 describe('AccessToken', () => {
   it('should expire in 1800000 ms', () => {

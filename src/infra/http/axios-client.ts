@@ -1,4 +1,5 @@
 import { HttpGetClient } from '@/domain/contracts/http'
+
 import axios from 'axios'
 
 type Params = HttpGetClient.Params

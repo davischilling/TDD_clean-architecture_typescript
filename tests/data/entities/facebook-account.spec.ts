@@ -1,4 +1,4 @@
-import { FacebookAccount } from '@/domain/entities'
+import { FacebookAccount } from '@/data/entities'
 
 describe('FacebookAccount', () => {
   const fbData = {

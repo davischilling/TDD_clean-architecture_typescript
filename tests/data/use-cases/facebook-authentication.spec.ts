@@ -4,14 +4,15 @@ import {
   LoadUserAccountRepository,
   SaveFacebookAccoutRepository
 } from '@/domain/contracts/repos'
-import { FacebookAuthentication, setupFacebookAuthentication } from '@/domain/use-cases'
-import { AuthenticationError } from '@/domain/entities/errors'
-import { AccessToken, FacebookAccount } from '@/domain/entities'
+import { FacebookAuthentication } from '@/domain/use-cases/authentication'
+import { setupFacebookAuthentication } from '@/data/services'
+import { AuthenticationError } from '@/data/errors'
+import { AccessToken, FacebookAccount } from '@/data/entities'
 
 import { mock, MockProxy } from 'jest-mock-extended'
 import { mocked } from 'ts-jest/utils'
 
-jest.mock('@/domain/entities/facebook-account')
+jest.mock('@/data/entities/facebook-account')
 
 describe('FacebookAuthentication', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
