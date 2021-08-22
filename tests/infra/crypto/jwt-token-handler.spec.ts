@@ -60,14 +60,13 @@ describe('JwtTokenHandler', () => {
   })
 
   describe('validateToken', () => {
+    let key: string
     let token: string
 
     beforeAll(() => {
+      key = 'any_key'
       token = 'any_token'
-      // mockImplementation é usado em métodos síncronos,
-      // modificando a implementação do método
-      // para que o valor possa ser retornado
-      // fakeJwt.verify.mockImplementation(() => token)
+      fakeJwt.verify.mockImplementation(() => ({ key }))
     })
 
     it('should call jwt.verify with correct params', async () => {
@@ -75,6 +74,12 @@ describe('JwtTokenHandler', () => {
 
       expect(fakeJwt.verify).toHaveBeenCalledWith(token, secret)
       expect(fakeJwt.verify).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return the key used to sign', async () => {
+      const generatedKey = await sut.validateToken({ token })
+
+      expect(generatedKey).toBe(key)
     })
   })
 })
