@@ -1,10 +1,10 @@
 import { app } from '@/main/config/app'
+import { env } from '@/main/config/env'
 import { authentication } from '@/main/middlewares'
 import { ForbiddenError } from '@/application/errors'
-import { env } from '@/main/config/env'
 
-import request from 'supertest'
 import { sign } from 'jsonwebtoken'
+import request from 'supertest'
 
 describe('Authentication Middleware', () => {
   it('should return 403 if authorization header was not provided', async () => {
