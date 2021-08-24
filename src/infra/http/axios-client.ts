@@ -1,4 +1,4 @@
-import { HttpGetClient } from '@/domain/contracts/http'
+import { HttpGetClient } from '@/data/contracts/http'
 
 import axios from 'axios'
 

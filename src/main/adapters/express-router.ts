@@ -1,4 +1,5 @@
 import { Controller } from '@/application/controllers'
+
 import { RequestHandler } from 'express'
 
 type Adapter = (controller: Controller) => RequestHandler
