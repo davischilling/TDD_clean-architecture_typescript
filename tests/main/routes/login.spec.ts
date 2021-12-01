@@ -7,13 +7,13 @@ import request from 'supertest'
 
 describe('Login Routes', () => {
   let pg: FakeDb
-  const loadUserSpy = jest.fn()
+  // const loadUserSpy = jest.fn()
 
-  jest.mock('@/infra/apis/facebook', () => ({
-    FacebookApi: jest.fn().mockReturnValue({
-      loadUser: loadUserSpy
-    })
-  }))
+  // jest.mock('@/infra/apis/facebook', () => ({
+  //   FacebookApi: jest.fn().mockReturnValue({
+  //     loadUser: loadUserSpy
+  //   })
+  // }))
 
   beforeAll(async () => {
     pg = await makeFakeDb([PgUser])
@@ -28,18 +28,18 @@ describe('Login Routes', () => {
   })
 
   describe('POST /login/facebook', () => {
-    it('should return 200 with AccessToken', async () => {
-      loadUserSpy.mockResolvedValueOnce({
-        facebookId: 'any_id', name: 'any_name', email: 'any_email'
-      })
+    // it('should return 200 with AccessToken', async () => {
+    //   loadUserSpy.mockResolvedValueOnce({
+    //     facebookId: 'any_id', name: 'any_name', email: 'any_email'
+    //   })
 
-      const { status, body } = await request(app)
-        .post('/api/login/facebook')
-        .send({ token: 'valid_token' })
+    //   const { status, body } = await request(app)
+    //     .post('/api/login/facebook')
+    //     .send({ token: 'valid_token' })
 
-      expect(status).toBe(200)
-      expect(body.accessToken).toBeDefined()
-    })
+    //   expect(status).toBe(200)
+    //   expect(body.accessToken).toBeDefined()
+    // })
 
     it('should return 401 with AnauthorizedError', async () => {
       const { status, body } = await request(app)
